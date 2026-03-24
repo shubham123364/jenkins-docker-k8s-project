@@ -8,16 +8,11 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/spring-projects/spring-petclinic.git'
-            }
-        }
-
         stage('Build - Java17') {
             steps {
                 script {
-                    docker.image('openjdk:17-jdk').inside {
+                    docker.image('eclipse-temurin:17').inside {
+                        sh 'apt update && apt install -y maven'
                         sh 'mvn clean package -DskipTests'
                     }
                 }
@@ -27,7 +22,8 @@ pipeline {
         stage('Test - Java11') {
             steps {
                 script {
-                    docker.image('openjdk:11-jdk').inside {
+                    docker.image('eclipse-temurin:11').inside {
+                        sh 'apt update && apt install -y maven'
                         sh 'mvn test'
                     }
                 }
@@ -37,7 +33,8 @@ pipeline {
         stage('SonarQube Analysis - Java8') {
             steps {
                 script {
-                    docker.image('openjdk:8').inside {
+                    docker.image('eclipse-temurin:8').inside {
+                        sh 'apt update && apt install -y maven'
                         sh """
                         mvn sonar:sonar \
                         -Dsonar.host.url=$SONARQUBE_SERVER \
