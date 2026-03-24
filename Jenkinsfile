@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONARQUBE_SERVER = 'http://sonarqube:9000'
-        DOCKER_IMAGE = 'YOUR_DOCKER_HUB_USERNAME/java-app:latest'
+        DOCKER_IMAGE = 'sudo503/java-app:latest'
     }
 
     stages {
@@ -11,8 +11,7 @@ pipeline {
         stage('Build - Java17') {
             steps {
                 script {
-                    docker.image('eclipse-temurin:17').inside {
-                        sh 'apt update && apt install -y maven'
+                    docker.image('maven:3.9.9-eclipse-temurin-17').inside {
                         sh 'mvn clean package -DskipTests'
                     }
                 }
@@ -22,8 +21,7 @@ pipeline {
         stage('Test - Java11') {
             steps {
                 script {
-                    docker.image('eclipse-temurin:11').inside {
-                        sh 'apt update && apt install -y maven'
+                    docker.image('maven:3.9.9-eclipse-temurin-11').inside {
                         sh 'mvn test'
                     }
                 }
@@ -33,12 +31,11 @@ pipeline {
         stage('SonarQube Analysis - Java8') {
             steps {
                 script {
-                    docker.image('eclipse-temurin:8').inside {
-                        sh 'apt update && apt install -y maven'
+                    docker.image('maven:3.9.9-eclipse-temurin-8').inside {
                         sh """
                         mvn sonar:sonar \
                         -Dsonar.host.url=$SONARQUBE_SERVER \
-                        -Dsonar.login=YOUR_SONAR_TOKEN
+                        -Dsonar.login=squ_fd53f999b0b58cfd200eac78858c6dde26782a7d
                         """
                     }
                 }
