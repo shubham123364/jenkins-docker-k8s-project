@@ -28,10 +28,10 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis - Java11') {
+        stage('SonarQube Analysis - Java17') {
             steps {
                 script {
-                    docker.image('maven:3.9.9-eclipse-temurin-11').inside('--network cicd-network') {
+                    docker.image('maven:3.9.9-eclipse-temurin-17').inside('--network cicd-network') {
                         sh """
                         mvn sonar:sonar \
                         -Dsonar.host.url=$SONARQUBE_SERVER \
